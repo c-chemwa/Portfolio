@@ -1,139 +1,39 @@
-import { useState, useEffect, useRef } from "react";
+const uiuxMain = "/uiux-main.jpg";
+const uiuxCollage = ["/uiux1.jpg", "/uiux2.jpg", "/uiux3.jpg", "/uiux4.jpg"];
 
-export default function Card({
-  images = [],
-  alt = "",
-  title,
-  description,
-  position = "center", // "left" | "center" | "right"
-  isFront = false, // hovered
-  isActive = false, // center (clicked)
-  onHover = () => {},
-  onLeave = () => {},
-  onClick = () => {},
-}) {
-  const [hover, setHover] = useState(false);
-  const [current, setCurrent] = useState(0);
-  const intervalRef = useRef(null);
+const musicMain = "/music-main.jpg";
+const musicCollage = ["/music1.jpg", "/music2.jpg", "/music3.jpg", "/music4.jpg"];
 
-  // Slideshow
-  useEffect(() => {
-    if (!(hover || isActive) || images.length < 2) return;
-    clearInterval(intervalRef.current);
-    intervalRef.current = setInterval(() => {
-      setCurrent(c => (c + 1) % images.length);
-    }, 1700);
-    return () => clearInterval(intervalRef.current);
-  }, [hover, isActive, images.length]);
+const filmMain = "/film-main.jpg";
+const filmCollage = ["/film1.jpg", "/film2.jpg", "/film3.jpg", "/film4.jpg"];
 
-  useEffect(() => {
-    if (!(hover || isActive)) setCurrent(0);
-  }, [hover, isActive]);
-
-  // Style based on position/state
-  let style = {};
-  let z = 10;
-  if (position === "center") {
-    style = {
-      transform: "scale(1.15) rotateY(0deg)",
-      width: "30vw", minWidth: 240, maxWidth: 430, height: "60vh",
-      boxShadow: "0 16px 60px 0 rgba(0,0,0,0.45)",
-      transition: "all 0.5s cubic-bezier(.42,0,.58,1)",
-    };
-    z = isFront ? 40 : 30;
-  } else if (position === "left") {
-    style = {
-      transform: "scale(0.88) rotateY(24deg) translateX(-13vw)",
-      width: "22vw", minWidth: 160, maxWidth: 300, height: "54vh",
-      filter: "brightness(0.7) blur(1px)",
-      opacity: 0.7,
-      transition: "all 0.5s cubic-bezier(.42,0,.58,1)",
-    };
-    z = isFront ? 50 : 20;
-  } else if (position === "right") {
-    style = {
-      transform: "scale(0.88) rotateY(-24deg) translateX(13vw)",
-      width: "22vw", minWidth: 160, maxWidth: 300, height: "54vh",
-      filter: "brightness(0.7) blur(1px)",
-      opacity: 0.7,
-      transition: "all 0.5s cubic-bezier(.42,0,.58,1)",
-    };
-    z = isFront ? 50 : 20;
-  }
-
+export default function Landing() {
   return (
-    <div
-      className="transition-all duration-500 ease-in-out rounded-3xl shadow-2xl overflow-hidden flex flex-col items-center justify-center cursor-pointer relative mx-[-5vw]"
-      style={{
-        background: "rgba(30,30,40,0.97)",
-        zIndex: z,
-        ...style,
-      }}
-      onMouseEnter={() => { setHover(true); onHover(); }}
-      onMouseLeave={() => { setHover(false); onLeave(); }}
-      onClick={() => { if (!isActive) onClick(); }}
-      tabIndex={0}
-      aria-label={title}
-    >
-      {/* Slideshow Image */}
-      {images.length > 0 && (
-        <img
-          src={images[hover || isActive ? current : 0]}
-          alt={alt}
-          className="object-cover w-full h-full transition-all duration-700"
-          draggable={false}
-        />
-      )}
-
-      {/* Overlay title (centered, fades on hover/active) */}
-      <span
-        className={`absolute inset-0 flex items-center justify-center text-4xl md:text-5xl font-bold text-white drop-shadow-lg pointer-events-none transition-all duration-500 ${
-          hover || isActive ? "opacity-0" : "opacity-100"
-        }`}
-      >
-        {title}
-      </span>
-      {(hover || isActive) && (
-        <div className="absolute bottom-4 left-0 w-full flex justify-center pointer-events-none">
-          <span className="bg-black/60 px-4 py-2 rounded-xl text-white text-2xl font-bold shadow-lg">
-            {title}
-          </span>
-        </div>
-      )}
-      {/* Arrows (show only on hover/active and if more than 1 image) */}
-      {(hover || isActive) && images.length > 1 && (
-        <>
-          <button
-            className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/40 text-white px-2 py-1 rounded-full z-50"
-            onClick={e => {
-              e.preventDefault(); e.stopPropagation();
-              setCurrent(c => (c - 1 + images.length) % images.length);
-            }}
-            tabIndex={-1}
-            aria-label="Previous image"
-            type="button"
-          >
-            &lt;
-          </button>
-          <button
-            className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/40 text-white px-2 py-1 rounded-full z-50"
-            onClick={e => {
-              e.preventDefault(); e.stopPropagation();
-              setCurrent(c => (c + 1) % images.length);
-            }}
-            tabIndex={-1}
-            aria-label="Next image"
-            type="button"
-          >
-            &gt;
-          </button>
-        </>
-      )}
-      {isActive && (
-        <div className="absolute bottom-0 left-0 w-full bg-black/70 text-white p-6 pb-8 text-lg md:text-xl rounded-b-3xl z-50 transition-all duration-500">
-          {description}
-        </div>
-      )}
+    <div className="w-screen h-screen flex flex-row md:flex-row flex-col items-stretch justify-stretch overflow-hidden">
+      <Card
+        to="/uiux"
+        mainImage={uiuxMain}
+        collageImages={uiuxCollage}
+        alt="UI/UX"
+        bgColor="bg-blue-700"
+        title="UI/UX"
+      />
+      <Card
+        to="/music"
+        mainImage={musicMain}
+        collageImages={musicCollage}
+        alt="Music"
+        bgColor="bg-pink-700"
+        title="Music"
+      />
+      <Card
+        to="/film"
+        mainImage={filmMain}
+        collageImages={filmCollage}
+        alt="Film"
+        bgColor="bg-yellow-700"
+        title="Film"
+      />
     </div>
   );
 }
